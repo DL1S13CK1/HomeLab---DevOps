@@ -1,0 +1,24 @@
+services:
+
+  nginx:
+    image: nginx:1.29.1
+    restart: always
+    ports:
+      - 80:80
+  
+  postgresdb:
+    image: postgres:18rc1
+    restart: always
+    volumes: 
+      - db-data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:5.4.0
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgresdb
+
+volumes:
+  db-data:
