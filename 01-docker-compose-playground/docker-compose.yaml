@@ -7,10 +7,16 @@ services:
       - 80:80
   
   postgresdb:
-    image: postgres:18rc1
+    image: postgres:16-alpine
     restart: always
+    env_file: .env
     volumes: 
       - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   adminer:
     image: adminer:5.4.0
@@ -18,7 +24,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - postgresdb
+      postgresdb:
+        condition: service_healthy
 
 volumes:
   db-data:
